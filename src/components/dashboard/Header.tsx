@@ -32,7 +32,7 @@ const createFlag = (svg: string) =>
   `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
 const flagImages: Record<Language, string> = {
   English: createFlag(`
-    <svg xmlns="http://www\.w3.org/2000/svg" width="80" height="54" viewBox="0 0 80 54">
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="54" viewBox="0 0 80 54">
       <rect width="80" height="54" fill="#012169"/>
       <path d="M0 0L80 54M80 0L0 54" stroke="#fff" stroke-width="14"/>
       <path d="M0 0L80 54M80 0L0 54" stroke="#C8102E" stroke-width="6"/>
@@ -41,14 +41,14 @@ const flagImages: Record<Language, string> = {
     </svg>
   `),
   French: createFlag(`
-    <svg xmlns="http://www\.w3.org/2000/svg" width="80" height="54" viewBox="0 0 80 54">
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="54" viewBox="0 0 80 54">
       <rect width="26.67" height="54" fill="#0055A4"/>
       <rect x="26.67" width="26.66" height="54" fill="#fff"/>
       <rect x="53.33" width="26.67" height="54" fill="#EF4135"/>
     </svg>
   `),
   Spanish: createFlag(`
-    <svg xmlns="http://www\.w3.org/2000/svg" width="80" height="54" viewBox="0 0 80 54">
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="54" viewBox="0 0 80 54">
       <rect width="80" height="54" fill="#AA151B"/>
       <rect y="13.5" width="80" height="27" fill="#F1BF00"/>
       <circle cx="23" cy="27" r="5" fill="#AA151B" opacity=".8"/>
@@ -103,6 +103,26 @@ const notifications = [
     type: "error",
   },
 ]
+const notificationTranslations: Record<Language, Record<string, { title: string; subtitle: string }>> = {
+  English: {
+    settings: { title: "Settings", subtitle: "Update Dashboard" },
+    event: { title: "Event Update", subtitle: "An event date update again" },
+    profile: { title: "Profile", subtitle: "Update your profile" },
+    error: { title: "Application Error", subtitle: "Check Your running application" },
+  },
+  French: {
+    settings: { title: "Parametres", subtitle: "Mettre a jour le tableau de bord" },
+    event: { title: "Mise a jour evenement", subtitle: "Une nouvelle mise a jour de la date" },
+    profile: { title: "Profil", subtitle: "Mettre a jour votre profil" },
+    error: { title: "Erreur application", subtitle: "Verifiez votre application" },
+  },
+  Spanish: {
+    settings: { title: "Configuracion", subtitle: "Actualizar el panel" },
+    event: { title: "Actualizacion de evento", subtitle: "Nueva actualizacion de la fecha" },
+    profile: { title: "Perfil", subtitle: "Actualiza tu perfil" },
+    error: { title: "Error de aplicacion", subtitle: "Comprueba tu aplicacion" },
+  },
+}
 export default function Header({
   onMenuClick,
 }: HeaderProps) {
@@ -637,11 +657,12 @@ export default function Header({
               "notification" && (
               <div
                 className="
-                  absolute
-                  right-0
-                  top-[48px]
+                  fixed
+                  left-3
+                  right-3
+                  top-[74px]
                   z-50
-                  w-[min(300px,calc(100vw-24px))]
+                  w-auto
                   overflow-hidden
                   rounded-[14px]
                   border
@@ -650,8 +671,11 @@ export default function Header({
                   shadow-xl
                   dark:border-[#313D4F]
                   dark:bg-[#273142]
+                  sm:absolute
+                  sm:left-auto
+                  sm:right-0
                   sm:top-[52px]
-                  sm:w-[300px]
+                  sm:w-[min(300px,calc(100vw-24px))]
                 "
               >
                 <div
@@ -705,14 +729,10 @@ export default function Header({
                       />
                       <div className="min-w-0">
                         <p className="text-[14px] font-semibold text-[#202224] dark:text-white">
-                          {
-                            notification.title
-                          }
+                          {notificationTranslations[language][notification.type]?.title ?? notification.title}
                         </p>
                         <p className="truncate text-[11px] text-[#A6A6A6] dark:text-gray-400">
-                          {
-                            notification.subtitle
-                          }
+                          {notificationTranslations[language][notification.type]?.subtitle ?? notification.subtitle}
                         </p>
                       </div>
                     </button>
@@ -1056,10 +1076,7 @@ function NotificationIcon({
   }
   return (
     <span
-      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white ${
-        styles[type] ??
-        "bg-[#4880FF]"
-      }`}
+      className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white " + (styles[type] ?? "bg-[#4880FF]")}
     >
       {type === "settings" && (
         <Settings size={18} />
